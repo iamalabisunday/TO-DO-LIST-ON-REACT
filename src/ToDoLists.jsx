@@ -1,17 +1,50 @@
 import {useEffect, useState} from "react";
+import TodoComponent from "./assets/TodoComponent.jsx";
 
 export default function ToDoLists() {
   const [toDo, setToDO] = useState("");
   const [enteredTodos, setEnteredTodos] = useState([]);
+  const [initialLoad, setInitialLoad] = useState(true);
+  const [editIndex, setEditIndex] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
 
+  // Get and load data from local storage
   useEffect(() => {
-    localStorage.setItem("ReactToDos", JSON.stringify(enteredTodos));
-  }, [enteredTodos]);
+    const storedTodos = localStorage.getItem("ReactTodos");
+    if (storedTodos) {
+      setEnteredTodos(JSON.parse(storedTodos));
+    }
+    setInitialLoad(false);
+  }, []);
+
+  // Saved to local storage.
+  useEffect(() => {
+    if (!initialLoad) {
+      localStorage.setItem("ReactTodos", JSON.stringify(enteredTodos));
+    }
+  });
 
   const submissionManager = (e) => {
     e.preventDefault();
-    setEnteredTodos([...enteredTodos, toDo]);
+    if (isEditing && editIndex !== null) {
+      // Update existing todo
+      const updatedTodos = [...enteredTodos];
+      updatedTodos[editIndex] = toDo;
+      setEnteredTodos(updatedTodos);
+      setIsEditing(false);
+      setEditIndex(null);
+    } else {
+      // Add new todo
+      setEnteredTodos([...enteredTodos, toDo]);
+    }
     setToDO("");
+  };
+
+  // Edit Todo Function
+  const editTodo = (index) => {
+    setToDO(enteredTodos[index]);
+    setEditIndex(index);
+    setIsEditing(true);
   };
   return (
     <div className="w-screen h-screen mx-auto bg-gray-300">
@@ -25,7 +58,7 @@ export default function ToDoLists() {
               type="text"
               className="border-1 rounded-sm px-2 border-[#FF5846] active:border-2 active:border-[#FF5846] placeholder:text-sm placeholder:text-gray-300"
               placeholder="Add your task"
-              value={toDo || " "}
+              value={toDo || ""}
               onChange={(e) => setToDO(e.target.value)}
             />
             <button
@@ -35,6 +68,15 @@ export default function ToDoLists() {
               Add Task
             </button>
           </form>
+          {/* Render Data */}
+          {enteredTodos.map((todoItem, index) => (
+            <div key={index} className="flex justify-between">
+              <TodoComponent todoItem={todoItem} />
+              <div className="bg-gray-600 py-1 px-2 rounded-sm text-white cursor-pointer">
+                <button onClick={() => editTodo(index)}>Edit</button>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </div>
