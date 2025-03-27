@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import TodoComponent from "./assets/TodoComponent.jsx";
+import TodoComponent from "./TodoComponent.jsx";
 
 export default function ToDoLists() {
   const [toDo, setToDO] = useState("");
