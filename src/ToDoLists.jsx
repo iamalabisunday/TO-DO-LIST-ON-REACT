@@ -46,6 +46,12 @@ export default function ToDoLists() {
     setEditIndex(index);
     setIsEditing(true);
   };
+
+  // Delete Service
+  const deleteTodo = (index) => {
+    const filteredTodos = enteredTodos.filter((item, ind) => ind !== index);
+    setEnteredTodos(filteredTodos);
+  };
   return (
     <div className="w-screen h-screen mx-auto bg-gray-300">
       <div className="container mx-auto flex justify-center items-center">
@@ -56,7 +62,7 @@ export default function ToDoLists() {
           <form action="todo" className="w-fit flex flex-row gap-2" onSubmit={submissionManager}>
             <input
               type="text"
-              className="border-1 rounded-sm px-2 border-[#FF5846] active:border-2 active:border-[#FF5846] placeholder:text-sm placeholder:text-gray-300"
+              className="border-1 rounded-sm px-2 border-[#FF5846] active:border-1 active:border-[#FF5846] placeholder:text-sm placeholder:text-gray-300"
               placeholder="Add your task"
               value={toDo || ""}
               onChange={(e) => setToDO(e.target.value)}
@@ -72,8 +78,19 @@ export default function ToDoLists() {
           {enteredTodos.map((todoItem, index) => (
             <div key={index} className="flex justify-between">
               <TodoComponent todoItem={todoItem} />
-              <div className="bg-gray-600 py-1 px-2 rounded-sm text-white cursor-pointer">
-                <button onClick={() => editTodo(index)}>Edit</button>
+              <div className="   flex gap-2 w-fit">
+                <button
+                  onClick={() => editTodo(index)}
+                  className="bg-gray-300 py-1 px-2 rounded-sm text-white cursor-pointer"
+                >
+                  Edit
+                </button>
+                <button
+                  onClick={() => deleteTodo(index)}
+                  className="bg-gray-600 py-1 px-2 rounded-sm text-white cursor-pointer"
+                >
+                  Delete
+                </button>
               </div>
             </div>
           ))}
